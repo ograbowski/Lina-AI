@@ -1,0 +1,10 @@
+
+<%= form_with model: [conversation, new_message],
+              data: { turbo: true },
+              class: "flex gap-2",
+              id: "new-message-form" do |form| %>
+  <%= form.text_area :content, placeholder: "Napisz wiadomość...",
+                     class: "flex-1 border rounded-lg p-3 resize-none",
+                     rows: 2 %>
+  <%= form.submit "Wyślij", class: "bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600" %>
+<% end %>

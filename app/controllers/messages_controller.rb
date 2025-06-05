@@ -1,3 +1,4 @@
+
 class MessagesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_conversation, only: [:create]
@@ -5,18 +6,17 @@ class MessagesController < ApplicationController
   def create
     @user_message = @conversation.add_user_message(message_params[:content])
 
-    openai_service = OpenaiClientService.new
-    ai_response = openai_service.chat_completion(@conversation.messages.chronological)
+    respond_to do |format|
+      if @user_message.persisted?
+        # Wywołaj OpenAI w tle
+        GenerateAiResponseJob.perform_later(@conversation)
 
-    if ai_response[:success]
-      @conversation.add_assistant_message(ai_response[:content])
-
-      update_conversation_title if @conversation.messages.count == 2
-    else
-      flash[:error] = ai_response[:error]
+        format.turbo_stream { render turbo_stream: turbo_stream.replace("new-message-form", partial: "form", locals: { conversation: @conversation, new_message: Message.new }) }
+        format.html { redirect_to @conversation }
+      else
+        format.html { redirect_to @conversation, alert: "Błąd przy wysyłaniu wiadomości" }
+      end
     end
-
-    redirect_to @conversation
   end
 
   private
