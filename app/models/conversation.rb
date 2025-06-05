@@ -7,7 +7,7 @@ class Conversation < ApplicationRecord
     messages.create!(content: content, role: "user")
   end
 
-  def add_assitant_message(content)
+  def add_assistant_message(content)
     messages.create!(content: content, role: "assistant")
   end
 end
