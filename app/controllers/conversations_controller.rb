@@ -1,8 +1,9 @@
 class ConversationsController < ApplicationController
+  before_action :authenticate_user!  # DODAJ autentykację
   before_action :set_conversation, only: [:show, :destroy]
 
   def index
-    @conversations = Conversation.order(updated_at: :desc)
+    @conversations = current_user.conversations.order(updated_at: :desc)
   end
 
   def show
@@ -11,7 +12,7 @@ class ConversationsController < ApplicationController
   end
 
   def create
-    @conversation = Conversation.create!(title: "New chat")
+    @conversation = current_user.conversations.create!(title: "New chat")
     redirect_to @conversation
   end
 
@@ -27,6 +28,6 @@ class ConversationsController < ApplicationController
   private
 
   def set_conversation
-    @conversation = Conversation.find(params[:id])
+    @conversation = current_user.conversations.find(params[:id])
   end
 end

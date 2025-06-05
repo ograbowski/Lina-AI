@@ -1,4 +1,5 @@
 class MessagesController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_conversation, only: [:create]
 
   def create
@@ -21,7 +22,7 @@ class MessagesController < ApplicationController
   private
 
   def set_conversation
-    @conversation = Conversation.find(params[:conversation_id])
+    @conversation = current_user.conversations.find(params[:conversation_id])
   end
 
   def message_params
