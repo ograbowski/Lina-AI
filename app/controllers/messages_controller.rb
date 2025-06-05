@@ -4,7 +4,7 @@ class MessagesController < ApplicationController
   def create
     @user_message = @conversation.add_user_message(message_params[:content])
 
-    openai_service = OpenaiService.new
+    openai_service = OpenaiClientService.new
     ai_response = openai_service.chat_completion(@conversation.messages.chronological)
 
     if ai_response[:success]

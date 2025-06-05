@@ -1,0 +1,33 @@
+<div class="max-w-4xl mx-auto p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold"><%= @conversation.title %></h1>
+    <%= link_to "← Powrót", conversations_path, class: "text-blue-500 hover:underline" %>
+  </div>
+
+  <div class="bg-white border rounded-lg mb-6" style="height: 60vh; overflow-y: auto;">
+    <div class="p-4 space-y-4" id="messages">
+      <% @messages.each do |message| %>
+        <div class="<%= message.role == 'user' ? 'text-right' : 'text-left' %>">
+          <div class="inline-block max-w-xs lg:max-w-md px-4 py-2 rounded-lg
+                      <%= message.role == 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200' %>">
+            <%= simple_format(message.content) %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <%= form_with model: [@conversation, @new_message], local: true,
+                class: "flex gap-2" do |form| %>
+    <%= form.text_area :content, placeholder: "Napisz wiadomość...",
+                       class: "flex-1 border rounded-lg p-3 resize-none",
+                       rows: 2 %>
+    <%= form.submit "Wyślij", class: "bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600" %>
+  <% end %>
+</div>
+
+<script>
+    // Auto-scroll do najnowszej wiadomości
+    const messagesContainer = document.getElementById('messages');
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+</script>

@@ -1,0 +1,20 @@
+<div class="max-w-4xl mx-auto p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">Moje rozmowy</h1>
+    <%= button_to "Nowa rozmowa", conversations_path, method: :post,
+                  class: "bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" %>
+  </div>
+
+  <div class="space-y-4">
+    <% @conversations.each do |conversation| %>
+      <div class="border rounded-lg p-4 hover:bg-gray-50">
+        <%= link_to conversation, class: "block" do %>
+          <h3 class="font-semibold"><%= conversation.title %></h3>
+          <p class="text-gray-600 text-sm">
+            <%= conversation.updated_at.strftime("%d.%m.%Y %H:%M") %>
+          </p>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>

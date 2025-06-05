@@ -1,6 +1,5 @@
-class OpenaiService
-  include HTTParty
 
+class OpenaiClientService
   def initialize
     @client = OpenAI::Client.new
   end
@@ -19,7 +18,7 @@ class OpenaiService
 
     handle_response(response)
   rescue => e
-    Rails.logger.error "OpenAi API error: #{e.message}"
+    Rails.logger.error "OpenAI API error: #{e.message}"
     { error: "Przepraszam, wystąpił błąd podczas komunikacji z AI" }
   end
 
@@ -38,7 +37,7 @@ class OpenaiService
       content: "Jesteś Lina, jesteś wirtualnym przyjacielem człowieka. Rozmawiaj po polsku w naturalny i ciepły sposób."
     }
 
-    [system_message + formatted]
+    [system_message] + formatted
   end
 
   def handle_response(response)
