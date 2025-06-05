@@ -4,6 +4,6 @@ class Message < ApplicationRecord
   validates  :content, presence: true
   validates :role, inclusion: { in: %w[user assistant system] }
 
-  scope :chronological, -> { order(created_at) }
+  scope :chronological, -> { order(created_at: :asc) }
 
 end
