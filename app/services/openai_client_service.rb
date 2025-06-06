@@ -41,10 +41,23 @@ class OpenaiClientService
 
     system_message = {
       role: "system",
-      content: "Jesteś Lina, jesteś wirtualnym przyjacielem człowieka. Rozmawiaj po polsku w naturalny i ciepły sposób."
+      content: load_system_prompt
     }
 
     [system_message] + formatted
+  end
+
+  def load_system_prompt
+    @system_prompt ||= begin
+                         prompt_file = Rails.root.join("prompts", "lina_system_prompt.md")
+
+                         if File.exist?(prompt_file)
+                           File.read(prompt_file).strip
+                         else
+                           Rails.logger.warn "System prompt not found. Using default prompt."
+                           "Jesteś Lina, jesteś wirtualnym przyjacielem człowieka. Rozmawiaj po polsku w ciepły i naturalny dla czlowieka sposób."
+                         end
+                       end
   end
 
   def handle_response(response)
