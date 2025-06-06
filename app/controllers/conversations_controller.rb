@@ -1,6 +1,6 @@
 class ConversationsController < ApplicationController
   before_action :authenticate_user!  # DODAJ autentykację
-  before_action :set_conversation, only: [:show, :destroy]
+  before_action :set_conversation, only: [ :show, :destroy ]
 
   def index
     @conversations = current_user.conversations.order(updated_at: :desc)

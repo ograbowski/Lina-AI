@@ -1,7 +1,7 @@
 
 class MessagesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_conversation, only: [:create]
+  before_action :set_conversation, only: [ :create ]
 
   def create
     @user_message = @conversation.add_user_message(message_params[:content])

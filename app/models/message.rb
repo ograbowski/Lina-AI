@@ -6,5 +6,4 @@ class Message < ApplicationRecord
   broadcasts_to :conversation, partial: "messages/message"
 
   scope :chronological, -> { order(created_at: :asc) }
-
 end

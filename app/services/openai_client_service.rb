@@ -44,7 +44,7 @@ class OpenaiClientService
       content: load_system_prompt
     }
 
-    [system_message] + formatted
+    [ system_message ] + formatted
   end
 
   def load_system_prompt
