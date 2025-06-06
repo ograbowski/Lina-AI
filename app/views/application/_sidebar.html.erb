@@ -1,0 +1,48 @@
+<div id="mobile-sidebar"
+     data-sidebar-target="sidebar"
+     class="relative z-50  hidden"
+     role="dialog"
+     aria-modal="true">
+  <div
+    data-sidebar-target="backdrop"
+    class="fixed inset-0 bg-gray-900/80 opacity-0 transition-opacity ease-linear duration-300"
+    aria-hidden="true"
+    data-action="click->sidebar#close">
+  </div>
+
+  <div class="fixed inset-0 flex">
+
+    <div
+      data-sidebar-target="panel"
+      class="relative mr-16 flex w-full max-w-xs flex-1 -translate-x-full transition ease-in-out duration-300 transform">
+
+      <div
+        data-sidebar-target="closeBtn"
+        class="absolute top-0 left-full flex w-16 justify-center pt-5 opacity-0 transition ease-in-out duration-300">
+        <button type="button" data-action="click->sidebar#close" class="-m-2.5 p-2.5">
+          <span class="sr-only">Close sidebar</span>
+          <svg class="size-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4 ring-1 ring-white/10">
+        <div class="flex h-16 shrink-0 items-center">
+          <img class="h-8 w-auto" src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company">
+        </div>
+        <nav class="flex flex-1 flex-col">
+          <ul role="list" class="flex flex-1 flex-col gap-y-7">
+            <li>
+              <ul role="list" class="-mx-2 space-y-1">
+                <li>
+                    Dashboard
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>

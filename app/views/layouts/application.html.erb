@@ -23,10 +23,20 @@
   </head>
 
   <body class="h-full">
-    <p class="notice"><%= notice %></p>
-    <p class="alert"><%= alert %></p>
-    <main>
-      <%= yield %>
-    </main>
+
+    <div data-controller="sidebar">
+
+      <%= tag.div notice, class: "notice", data: { turbo_temporary: true } if notice %>
+      <%= tag.div alert, class: "alert", data: { turbo_temporary: true } if alert %>
+
+      <% if current_user.present? %>
+        <%= render "sidebar" %>
+      <% end %>
+      <%= render "header" %>
+
+      <main class="py-10">
+          <%= yield %>
+      </main>
+    </div>
   </body>
 </html>
