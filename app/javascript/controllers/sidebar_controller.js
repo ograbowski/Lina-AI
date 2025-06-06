@@ -1,9 +1,8 @@
-
 // app/javascript/controllers/sidebar_controller.js
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-    static targets = [ "sidebar", "backdrop", "panel", "closeBtn" ]
+    static targets = [ "sidebar", "panel", "closeBtn" ]
 
     // Inicjalizacja stanu
     initialize() {
@@ -29,10 +28,6 @@ export default class extends Controller {
     // Przywraca stan otwartego sidebara bez animacji
     restoreOpenState() {
         this.sidebarTarget.classList.remove('hidden')
-        document.body.classList.add('overflow-hidden')
-
-        this.backdropTarget.classList.remove('opacity-0')
-        this.backdropTarget.classList.add('opacity-100')
 
         this.panelTarget.classList.remove('-translate-x-full')
         this.panelTarget.classList.add('translate-x-0')
@@ -47,7 +42,7 @@ export default class extends Controller {
     open() {
         if (this.isOpen) return
 
-        // Pokazujemy container (ale jeszcze niewidoczne elementy)
+        // Pokazujemy container
         this.sidebarTarget.classList.remove('hidden')
 
         // Zapisz stan do localStorage
@@ -55,13 +50,6 @@ export default class extends Controller {
 
         // Dajemy czas na zaaplikowanie klas przed animacją
         requestAnimationFrame(() => {
-            // Nadajemy clasę "entering" dla elementów podczas animacji
-            document.body.classList.add('overflow-hidden')
-
-            // Animujemy backdrop (tło)
-            this.backdropTarget.classList.remove('opacity-0')
-            this.backdropTarget.classList.add('opacity-100')
-
             // Animujemy wysuwanie panelu
             this.panelTarget.classList.remove('-translate-x-full')
             this.panelTarget.classList.add('translate-x-0')
@@ -81,18 +69,12 @@ export default class extends Controller {
         // Zapisz stan do localStorage
         localStorage.setItem('sidebarOpen', 'false')
 
-        // Cofamy animacje
-        this.backdropTarget.classList.remove('opacity-100')
-        this.backdropTarget.classList.add('opacity-0')
-
+        // Rozpoczynamy animacje zamykania
         this.panelTarget.classList.remove('translate-x-0')
         this.panelTarget.classList.add('-translate-x-full')
 
         this.closeBtnTarget.classList.remove('opacity-100')
         this.closeBtnTarget.classList.add('opacity-0')
-
-        // Usuwamy overflow:hidden po animacji
-        document.body.classList.remove('overflow-hidden')
 
         // Po zakończeniu animacji ukrywamy sidebar
         setTimeout(() => {
