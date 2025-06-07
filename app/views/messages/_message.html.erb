@@ -1,6 +1,7 @@
-<div class="<%= message.role == 'user' ? 'text-right my-4' : 'text-left' %>" id="<%= dom_id(message) %>">
-  <div class="inline-block max-w-xs lg:max-w-md px-4 py-2 rounded-lg
-              <%= message.role == 'user' ? 'msg-user' : 'msg-system' %>">
-    <%= simple_format(message.content) %>
-  </div>
+<div id="<%= dom_id(message) %>" class="mb-4">
+  <% if message.role == "user" %>
+    <%= render "messages/user_message", message: message %>
+  <% elsif message.role == "assistant" %>
+    <%= render "messages/lina_message", message: message %>
+  <% end %>
 </div>
