@@ -1,6 +1,6 @@
 class DetailsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_current_user, only: [:profile]
+  before_action :set_current_user, only: [ :profile ]
 
   def about_lina
   end

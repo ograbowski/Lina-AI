@@ -1,5 +1,4 @@
 module ApplicationHelper
-
   def bot_avatar(size: "size-10")
     image_tag "lina_avatar.png", alt: "Lina avatar", class: "#{size} rounded-full object-cover"
   end
