@@ -1,5 +1,5 @@
 class ConversationsController < ApplicationController
-  before_action :authenticate_user!  # DODAJ autentykację
+  before_action :authenticate_user!
   before_action :set_conversation, only: [ :show, :destroy ]
 
   def index
