@@ -9,9 +9,9 @@
       <div class="mb-6" id="messages" id="messages-container">
         <%= render "messages/messages", messages: @messages %>
       </div>
-      <div class="fixed bottom-0 left-0 right-0 max-w-3xl mx-auto bg-white p-4 shadow-lg mt-auto border-tl rounded-t-3xl ">
+      <div class="card fixed bottom-0 left-0 right-0 max-w-3xl mx-auto p-4 shadow-lg mt-auto rounded-t-3xl ">
         <%= render "messages/form", conversation: @conversation, new_message: @new_message %>
-        <p class="text-center text-sm/6 text-gray-700 mt-2 ">Lina can be wrong. If you need help, contact specialists.</p>
+        <p class="text-center text-sm/6 mt-2 ">Lina can be wrong. If you need help, contact specialists.</p>
       </div>
     </div>
   </div>

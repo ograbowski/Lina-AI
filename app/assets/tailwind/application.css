@@ -1,1 +1,44 @@
 @import "tailwindcss";
+
+.bg-app {
+    @apply bg-[#1E003A];
+}
+
+/* Tekst główny */
+.text-app {
+    @apply text-[#F5F3FF];
+}
+
+/* Karta / sekcja interfejsu */
+.card {
+    @apply bg-[#2A004F] text-[#F5F3FF] p-4 shadow-md;
+}
+
+/* Przycisk główny */
+.btn-primary {
+    @apply bg-[#6D28D9] hover:bg-[#A78BFA] text-white font-semibold py-2 px-4 rounded-lg transition;
+}
+
+/* Przycisk akcentowy (np. CTA) */
+.btn-accent {
+    @apply bg-[#10B981] hover:bg-[#059669] text-white font-bold py-2 px-4 rounded-lg transition;
+}
+
+/* Pole tekstowe */
+.input {
+    @apply bg-[#2A004F] border border-[#3F0071] text-[#F5F3FF] placeholder-[#A78BFA] p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-[#6D28D9];
+}
+
+/* Separator / linia */
+.hr {
+    @apply border-t border-[#3F0071] my-6;
+}
+
+.msg-user {
+    @apply bg-[#4C1D95] text-[#F5F3FF] ;
+}
+
+/* Wiadomość od systemu */
+.msg-system {
+    @apply bg-[#3B0764] text-[#F5F3FF];
+}
