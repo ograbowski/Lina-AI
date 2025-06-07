@@ -1,23 +1,22 @@
+<div class="max-w-3xl mx-auto px-6">
+<!--  <div class="flex justify-between items-center mb-6">-->
+    <%#= link_to "← Powrót", conversations_path, class: "text-blue-500 hover:underline" %>
+<!--  </div>-->
+  <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
 
-<div class="max-w-4xl mx-auto p-6">
-  <div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-bold"><%= @conversation.title %></h1>
-    <%= link_to "← Powrót", conversations_path, class: "text-blue-500 hover:underline" %>
-  </div>
-
-  <div class="bg-white border rounded-lg mb-6 h-[60vh] overflow-y-auto" id="messages-container">
-    <div class="p-4 space-y-4">
+    <div class="mx-auto max-w-3xl">
       <%= turbo_stream_from @conversation %>
-      <div id="messages">
-        <% @messages.each do |message| %>
-          <%= render "messages/message", message: message %>
-        <% end %>
+      <div class="mb-6" id="messages" id="messages-container">
+        <%= render "messages/messages", messages: @messages %>
+      </div>
+      <div class="fixed bottom-0 left-0 right-0 max-w-3xl mx-auto bg-white p-4 shadow-lg mt-auto border-tl rounded-t-3xl ">
+        <%= render "messages/form", conversation: @conversation, new_message: @new_message %>
+        <p class="text-center text-sm/6 text-gray-700 mt-2 ">Lina can be wrong. If you need help, contact specialists.</p>
       </div>
     </div>
   </div>
-
-  <%= render "messages/form", conversation: @conversation, new_message: @new_message %>
 </div>
+
 
 <script>
     function scrollToBottom() {
