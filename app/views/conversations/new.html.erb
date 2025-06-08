@@ -1,0 +1,37 @@
+<div class="max-w-xl lg:max-w-3xl mx-auto px-2 sm:px-0 sm:pl-20 lg:pl-0">
+<div class="flex-1 overflow-y-auto pb-32">
+    <div class="max-w-3xl mx-auto px-6">
+      <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-3xl">
+          <div class="text-center py-10">
+            <h1 class="text-2xl font-bold mb-4">Start a new conversation</h1>
+            <p class="text-gray-600 mb-8">Send your first message to begin</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card max-w-lg lg:max-w-2xl fixed bottom-0 left-0 sm:left-20 lg:left-0 right-0 mx-auto shadow-lg mt-auto rounded-t-3xl z-10">
+    <%= form_with model: @new_message,
+                  url: messages_path,
+                  data: {
+                    turbo: true,
+                    controller: "form",
+                    action: "turbo:submit-start->form#disable turbo:submit-end->form#enable"
+                  },
+                  class: "flex gap-2",
+                  id: "new-message-form" do |form| %>
+      <%= form.text_field :content,
+                          placeholder: "Type your first message...",
+                          class: "input flex-1 border rounded-lg p-3 placeholder:text-sm/6",
+                          required: true,
+                          autofocus: true,
+                          data: { target: "form.input" } %>
+      <%= form.submit "Start Chat",
+                      class: "btn-primary text-white text-sm/6 px-6 py-2 rounded-lg",
+                      data: { target: "form.submit" } %>
+    <% end %>
+    <p class="text-center text-sm/6 mt-2">Lina can be wrong. If you need help, contact specialists.</p>
+  </div>
+</div>

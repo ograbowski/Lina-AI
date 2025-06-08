@@ -3,17 +3,25 @@ class ConversationsController < ApplicationController
   before_action :set_conversation, only: [ :show, :destroy ]
 
   def index
-    @conversations = current_user.conversations.order(updated_at: :desc)
+    @conversations = current_user.conversations.joins(:messages).distinct.order(updated_at: :desc)
   end
 
   def show
+    if @conversation.messages.empty?
+      redirect_to conversations_path, alert: "Conversation not found or empty."
+      return
+    end
+
     messages_order
     @new_message = Message.new
   end
 
+  def new
+    @new_message = Message.new
+  end
+
   def create
-    @conversation = current_user.conversations.create!(title: "New chat")
-    redirect_to @conversation
+    redirect_to new_conversation_path
   end
 
   def destroy
