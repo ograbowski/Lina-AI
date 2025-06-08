@@ -9,10 +9,10 @@ Rails.application.routes.draw do
   root "conversations#index"
 
   resources :conversations do
-    resources :messages, only: [:create]
+    resources :messages, only: [ :create ]
   end
 
-  resources :messages, only: [:create]  # Dla nowych konwersacji
+  resources :messages, only: [ :create ]  # Dla nowych konwersacji
 
 
   get "about_lina", to: "details#about_lina"
