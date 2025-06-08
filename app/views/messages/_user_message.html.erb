@@ -1,5 +1,6 @@
-<div class="text-right">
-  <div class="inline-block max-w-xs lg:max-w-md px-4 ml-4 py-2 rounded-lg msg-user">
+<div class="flex items-start justify-end">
+  <div class="mr-3 inline-block max-w-xs lg:max-w-md px-4 ml-4 py-2 rounded-lg msg-user">
     <%= simple_format(message.content) %>
   </div>
+  <%= user_avatar(size: "size-8") %>
 </div>
