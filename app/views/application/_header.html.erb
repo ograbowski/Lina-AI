@@ -1,21 +1,25 @@
 <div class="sticky top-0 z-40 flex items-center justify-between gap-x-6 bg-[#2A004F] text-app px-4 py-4 shadow-xs sm:px-6">
-  <button type="button" data-action="click->sidebar#open" class="-m-2.5 p-2.5 text-white cursor-pointer">
+  <button type="button" data-action="click->sidebar#open" class="-m-2.5 p-2.5 cursor-pointer hover:text-[#E9DFFC]">
     <span class="sr-only">Open sidebar</span>
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 hover:text-gray-200">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"/>
-    </svg>
+    <%= render "application/icons/out_right", icon_class: "size-6" %>
   </button>
 
   <div class="flex gap-x-4 text-sm/6 font-medium">
     <div>
-      <%= link_to "About lina", about_lina_path, class: "hover:underline underline-offset-2 decoration-1" %>
+      <%= link_to "https://x.com/RoRg7idev", target: :_blank, class: "hover:text-[#E9DFFC]" do %>
+        <span class="sr-only">X</span>
+        <%= render "application/icons/x", icon_class: "size-6" %>
+      <% end %>
     </div>
     <div>
-      <%= link_to "About dev", about_dev_path, class: "hover:underline underline-offset-2 decoration-1" %>
+      <%= link_to "https://github.com/ograbowski", target: :_blank, class: "hover:text-[#E9DFFC]" do %>
+        <span class="sr-only">GitHub</span>
+        <%= render "application/icons/github", icon_class: "size-6" %>
+      <% end %>
     </div>
   </div>
 
   <div>
-    <%= link_to "Profile", profile_path, class: "hover:underline underline-offset-2 decoration-1" %>
+    <%= link_to current_user.email.first.upcase, profile_path, class: "bg-[#6D28D9] rounded-lg py-2 px-4 shrink-0 hover:bg-[#5B21B6]" %>
   </div>
 </div>

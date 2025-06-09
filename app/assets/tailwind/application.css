@@ -16,7 +16,7 @@
 
 /* Przycisk główny */
 .btn-primary {
-    @apply bg-[#6D28D9] hover:bg-[#A78BFA] text-white font-semibold py-2 px-4 rounded-lg transition;
+    @apply bg-[#6D28D9] hover:bg-[#5B21B6] text-white font-semibold py-2 px-4 rounded-lg transition cursor-pointer;
 }
 
 /* Przycisk akcentowy (np. CTA) */
@@ -41,6 +41,10 @@
 /* Wiadomość od systemu */
 .msg-system {
     @apply bg-[#3B0764] text-[#F5F3FF];
+}
+
+.text-subtle {
+    @apply text-[#C4B5FD];
 }
 
 @layer utilities {
