@@ -1,10 +1,14 @@
 <div class="sticky top-0 z-40 flex items-center justify-between gap-x-6 bg-[#2A004F] text-app px-4 py-4 shadow-xs sm:px-6">
-  <button type="button" data-action="click->sidebar#open" class="-m-2.5 p-2.5 cursor-pointer hover:text-[#E9DFFC]">
+  <button type="button"
+          data-action="click->sidebar#open"
+          data-sidebar-target="openBtn"
+          class="-m-2.5 p-2.5 cursor-pointer hover:text-[#E9DFFC]">
     <span class="sr-only">Open sidebar</span>
     <%= render "application/icons/out_right", icon_class: "size-6" %>
   </button>
 
-  <div class="flex gap-x-4 text-sm/6 font-medium">
+
+  <div class="flex gap-x-4 text-sm/6 font-medium place-items-center">
     <div>
       <%= link_to "https://x.com/RoRg7idev", target: :_blank, class: "hover:text-[#E9DFFC]" do %>
         <span class="sr-only">X</span>

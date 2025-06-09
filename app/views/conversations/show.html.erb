@@ -1,15 +1,16 @@
-<div class="max-w-xl lg:max-w-3xl mx-auto px-2 sm:px-0 sm:pl-20 lg:pl-0">
-  <div class="mx-auto">
-    <div class="mx-auto ">
-      <%= turbo_stream_from @conversation %>
-      <div class="mb-6 pb-40" id="messages" id="messages-container">
-        <%= render "messages/messages", messages: @messages %>
-      </div>
-      <div class="card max-w-lg lg:max-w-2xl fixed bottom-0 left-0 sm:left-20 lg:left-0 right-0 mx-auto shadow-lg mt-auto rounded-t-3xl z-10">
-        <%= render "messages/form", conversation: @conversation, new_message: @new_message %>
-        <p class="text-center text-sm/6 mt-2">Lina can be wrong. If you need help, contact specialists.</p>
-      </div>
+<div class="h-full flex flex-col max-w-xl lg:max-w-3xl mx-auto px-2 sm:px-0">
+  <!-- Główna zawartość - flex-1 zajmuje dostępną przestrzeń -->
+  <div class="flex-1 overflow-y-auto pb-32">
+    <%= turbo_stream_from @conversation %>
+    <div class="mb-6" id="messages" id="messages-container">
+      <%= render "messages/messages", messages: @messages %>
     </div>
+  </div>
+
+  <!-- Formularz na dole - zawsze widoczny -->
+  <div class="card w-full max-w-lg lg:max-w-xl mx-auto shadow-lg rounded-t-3xl z-10">
+    <%= render "messages/form", conversation: @conversation, new_message: @new_message %>
+    <p class="text-center text-sm/6 mt-2">Lina can be wrong. If you need help, contact specialists.</p>
   </div>
 </div>
 
