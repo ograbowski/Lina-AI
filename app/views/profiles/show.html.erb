@@ -1,0 +1,25 @@
+<div class="max-w-xl lg:max-w-3xl mx-auto sm:pl-20 lg:pl-0">
+  <div class="card max-w-lg lg:max-w-2xl mx-auto shadow-lg sm:rounded-3xl z-10">
+
+    <div class="px-4 py-6 sm:px-6 flex items-end gap-x-4">
+      <%= user_avatar(size: "size-20") %>
+      <%= link_to "Edit profile", edit_user_registration_path, class: "mt-1 text-sm/6 text-[#10B981] sm:col-span-2 sm:mt-0 hover:underline underline-offset-2 decoration-1" %>
+    </div>
+    <div class="border-t border-[#3F0071]">
+      <dl class="divide-y divide-[#3F0071]">
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <dt class="text-sm font-medium">Email address</dt>
+          <dd class="mt-1 text-sm/6 text-subtle sm:col-span-2 sm:mt-0"><%= @user.email %></dd>
+        </div>
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <dt class="text-sm font-medium">User since</dt>
+          <dd class="mt-1 text-sm/6 text-subtle sm:col-span-2 sm:mt-0"><%= @user.created_at.strftime("%-d.%m.%Y") %></dd>
+        </div>
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <dt class="text-sm font-medium">Chat count</dt>
+          <dd class="mt-1 text-sm/6 text-subtle sm:col-span-2 sm:mt-0"><%= @user.conversations.count %></dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+</div>

@@ -10,4 +10,9 @@ module ApplicationHelper
   def user_avatar(size: "size-10")
     image_tag "user_avatar.png", alt: "User avatar", class: "#{size} rounded-full object-cover flex-shrink-0"
   end
+
+  def min_password_length
+    @minimum_password_length || Devise.password_length.min || 6
+  end
+
 end

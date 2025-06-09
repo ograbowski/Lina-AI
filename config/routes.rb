@@ -13,11 +13,7 @@ Rails.application.routes.draw do
   end
 
   resources :messages, only: [ :create ]  # Dla nowych konwersacji
-
-
-  get "about_lina", to: "details#about_lina"
-  get "about_dev", to: "details#about_dev"
-  get "profile", to: "details#profile"
+  resource :profile, only: [:show, :edit, :update]
 
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest

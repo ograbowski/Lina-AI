@@ -31,7 +31,7 @@
 
 /* Separator / linia */
 .hr {
-    @apply border-t border-[#3F0071] my-6;
+    @apply border-t border-[#3F0071] my-4;
 }
 
 .msg-user {
