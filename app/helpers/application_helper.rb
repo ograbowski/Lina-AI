@@ -14,5 +14,4 @@ module ApplicationHelper
   def min_password_length
     @minimum_password_length || Devise.password_length.min || 6
   end
-
 end
