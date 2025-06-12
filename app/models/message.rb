@@ -1,5 +1,5 @@
 class Message < ApplicationRecord
-  belongs_to :conversation
+  belongs_to :conversation, touch: true
 
   validates :content, presence: true, length: { minimum: 1, maximum: 1000 }
   validates :role, inclusion: { in: %w[user assistant] }
@@ -8,5 +8,7 @@ class Message < ApplicationRecord
   scope :by_user, -> { where(role: "user") }
   scope :by_assistant, -> { where(role: "assistant") }
 
-  after_create_commit -> { broadcast_append_later_to conversation }
+  after_create_commit do
+    broadcast_append_later_to conversation
+  end
 end
