@@ -1,7 +1,10 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-    static targets = [ "sidebar", "panel", "closeBtn", "mainContent", "openBtn" ]
+    static targets = [
+        "sidebar", "panel", "closeBtn", "mainContent", "openBtn",
+        "desktopSidebar", "desktopPanel", "desktopCloseBtn"
+    ]
 
     initialize() {
         this.isOpen = false
@@ -10,120 +13,209 @@ export default class extends Controller {
 
     connect() {
         this.handleKeyDown = this.handleKeyDown.bind(this)
+        this.handleResize = this.handleResize.bind(this)
+
         document.addEventListener('keydown', this.handleKeyDown)
+        window.addEventListener('resize', this.handleResize)
 
-        // Wyłącz wszystkie animacje na początku
+        // Wyłącz animacje podczas inicjalizacji
         this.disableAnimations()
+        this.initializeSidebarState()
 
-        // Ustaw stan natychmiastowo bez animacji
-        this.initializeSidebarStateImmediately()
-
-        // Po krótkim timeout włącz animacje z powrotem
         setTimeout(() => {
             this.enableAnimations()
-        }, 50)
+        }, 100)
 
-        // Nasłuchuj na Turbo events
-        document.addEventListener('turbo:load', () => {
-            this.disableAnimations()
-            this.initializeSidebarStateImmediately()
-            setTimeout(() => {
-                this.enableAnimations()
-            }, 50)
-        })
-
-        document.addEventListener('turbo:render', () => {
-            this.disableAnimations()
-            this.initializeSidebarStateImmediately()
-            setTimeout(() => {
-                this.enableAnimations()
-            }, 50)
-        })
+        this.handleTurboEvents()
     }
 
     disconnect() {
         document.removeEventListener('keydown', this.handleKeyDown)
+        window.removeEventListener('resize', this.handleResize)
+    }
+
+    handleTurboEvents() {
+        const handleStateRestore = () => {
+            this.disableAnimations()
+            this.initializeSidebarState()
+            setTimeout(() => {
+                this.enableAnimations()
+            }, 100)
+        }
+
+        document.addEventListener('turbo:load', handleStateRestore)
+        document.addEventListener('turbo:render', handleStateRestore)
+    }
+
+    handleResize() {
+        // Przy zmianie rozmiaru okna, zaktualizuj stan
+        this.initializeSidebarState()
+    }
+
+    isDesktop() {
+        return window.innerWidth >= 768 // lg breakpoint
     }
 
     disableAnimations() {
-        // Wyłącz animacje dla wszystkich elementów
-        if (this.hasMainContentTarget) {
-            this.mainContentTarget.style.transition = 'none'
-        }
-        if (this.hasPanelTarget) {
-            this.panelTarget.style.transition = 'none'
-        }
-        if (this.hasCloseBtnTarget) {
-            this.closeBtnTarget.style.transition = 'none'
-        }
-        if (this.hasOpenBtnTarget) {
-            this.openBtnTarget.style.transition = 'none'
-        }
+        const elements = [
+            this.hasMainContentTarget ? this.mainContentTarget : null,
+            this.hasPanelTarget ? this.panelTarget : null,
+            this.hasDesktopPanelTarget ? this.desktopPanelTarget : null,
+            this.hasCloseBtnTarget ? this.closeBtnTarget : null,
+            this.hasDesktopCloseBtnTarget ? this.desktopCloseBtnTarget : null,
+            this.hasOpenBtnTarget ? this.openBtnTarget : null
+        ].filter(Boolean)
+
+        elements.forEach(el => {
+            el.style.transition = 'none'
+        })
     }
 
     enableAnimations() {
-        // Włącz animacje z powrotem
         if (this.hasMainContentTarget) {
             this.mainContentTarget.style.transition = 'margin-left 0.3s ease'
         }
         if (this.hasPanelTarget) {
             this.panelTarget.style.transition = 'transform 0.3s ease'
         }
+        if (this.hasDesktopPanelTarget) {
+            this.desktopPanelTarget.style.transition = 'transform 0.3s ease'
+        }
         if (this.hasCloseBtnTarget) {
             this.closeBtnTarget.style.transition = 'opacity 0.3s ease'
+        }
+        if (this.hasDesktopCloseBtnTarget) {
+            this.desktopCloseBtnTarget.style.transition = 'opacity 0.3s ease'
         }
         if (this.hasOpenBtnTarget) {
             this.openBtnTarget.style.transition = 'opacity 0.3s ease'
         }
     }
 
-    initializeSidebarStateImmediately() {
+    initializeSidebarState() {
         const savedState = localStorage.getItem('sidebarOpen')
 
         if (savedState === 'true') {
-            this.restoreOpenStateImmediately()
+            this.restoreOpenState()
         } else {
-            this.ensureClosedStateImmediately()
+            this.ensureClosedState()
         }
     }
 
-    restoreOpenStateImmediately() {
-        if (!this.hasSidebarTarget || !this.hasPanelTarget || !this.hasCloseBtnTarget) {
+    restoreOpenState() {
+        this.isOpen = true
+
+        if (this.isDesktop()) {
+            // Desktop: manipuluj layoutem
+            if (this.hasDesktopSidebarTarget && this.hasDesktopPanelTarget) {
+                this.desktopSidebarTarget.classList.remove('hidden')
+                this.desktopPanelTarget.classList.remove('-translate-x-full')
+                this.desktopPanelTarget.classList.add('translate-x-0')
+            }
+            this.adjustMainContentMargin()
+        } else {
+            // Mobile: zamknij sidebar (overlay nie powinien być otwarty przy ładowaniu)
+            this.isOpen = false
+            this.ensureClosedState()
             return
         }
 
-        // Ustaw stan natychmiastowo bez animacji
-        this.sidebarTarget.classList.remove('hidden')
-        this.panelTarget.classList.remove('-translate-x-full')
-        this.panelTarget.classList.add('translate-x-0')
-        this.closeBtnTarget.classList.remove('opacity-0')
-        this.closeBtnTarget.classList.add('opacity-100')
+        this.updateButtonVisibility()
+    }
+
+    ensureClosedState() {
+        this.isOpen = false
+
+        // Mobile sidebar
+        if (this.hasSidebarTarget && this.hasPanelTarget) {
+            this.sidebarTarget.classList.add('hidden')
+            this.panelTarget.classList.add('-translate-x-full')
+            this.panelTarget.classList.remove('translate-x-0')
+        }
+
+        // Desktop sidebar
+        if (this.hasDesktopSidebarTarget && this.hasDesktopPanelTarget) {
+            this.desktopPanelTarget.classList.add('-translate-x-full')
+            this.desktopPanelTarget.classList.remove('translate-x-0')
+        }
+
+        this.adjustMainContentMargin()
+        this.updateButtonVisibility()
+    }
+
+    open() {
+        if (this.isOpen) return
 
         this.isOpen = true
-        this.adjustMainContentMarginImmediately()
-        this.updateButtonVisibilityImmediately()
-    }
+        localStorage.setItem('sidebarOpen', 'true')
 
-    ensureClosedStateImmediately() {
-        if (!this.hasSidebarTarget || !this.hasPanelTarget || !this.hasCloseBtnTarget) {
-            return
+        if (this.isDesktop()) {
+            // Desktop: slide in i adjust layout
+            if (this.hasDesktopSidebarTarget && this.hasDesktopPanelTarget) {
+                this.desktopSidebarTarget.classList.remove('hidden')
+                requestAnimationFrame(() => {
+                    this.desktopPanelTarget.classList.remove('-translate-x-full')
+                    this.desktopPanelTarget.classList.add('translate-x-0')
+                })
+            }
+            this.adjustMainContentMargin()
+        } else {
+            // Mobile: overlay
+            if (this.hasSidebarTarget && this.hasPanelTarget) {
+                this.sidebarTarget.classList.remove('hidden')
+                requestAnimationFrame(() => {
+                    this.panelTarget.classList.remove('-translate-x-full')
+                    this.panelTarget.classList.add('translate-x-0')
+
+                    if (this.hasCloseBtnTarget) {
+                        this.closeBtnTarget.classList.remove('opacity-0')
+                        this.closeBtnTarget.classList.add('opacity-100')
+                    }
+                })
+            }
         }
 
-        // Ustaw stan natychmiastowo bez animacji
-        this.sidebarTarget.classList.add('hidden')
-        this.panelTarget.classList.add('-translate-x-full')
-        this.panelTarget.classList.remove('translate-x-0')
-        this.closeBtnTarget.classList.add('opacity-0')
-        this.closeBtnTarget.classList.remove('opacity-100')
-
-        this.isOpen = false
-        this.adjustMainContentMarginImmediately()
-        this.updateButtonVisibilityImmediately()
+        this.updateButtonVisibility()
     }
 
-    adjustMainContentMarginImmediately() {
+    close() {
+        if (!this.isOpen) return
+
+        this.isOpen = false
+        localStorage.setItem('sidebarOpen', 'false')
+
+        if (this.isDesktop()) {
+            // Desktop
+            if (this.hasDesktopPanelTarget) {
+                this.desktopPanelTarget.classList.remove('translate-x-0')
+                this.desktopPanelTarget.classList.add('-translate-x-full')
+            }
+            this.adjustMainContentMargin()
+        } else {
+            // Mobile
+            if (this.hasPanelTarget) {
+                this.panelTarget.classList.remove('translate-x-0')
+                this.panelTarget.classList.add('-translate-x-full')
+
+                if (this.hasCloseBtnTarget) {
+                    this.closeBtnTarget.classList.remove('opacity-100')
+                    this.closeBtnTarget.classList.add('opacity-0')
+                }
+
+                setTimeout(() => {
+                    if (!this.isOpen && this.hasSidebarTarget) {
+                        this.sidebarTarget.classList.add('hidden')
+                    }
+                })
+            }
+        }
+
+        this.updateButtonVisibility()
+    }
+
+    adjustMainContentMargin() {
         if (this.hasMainContentTarget) {
-            if (this.isOpen) {
+            if (this.isDesktop() && this.isOpen) {
                 this.mainContentTarget.style.marginLeft = `${this.sidebarWidth}px`
             } else {
                 this.mainContentTarget.style.marginLeft = '0px'
@@ -131,9 +223,9 @@ export default class extends Controller {
         }
     }
 
-    updateButtonVisibilityImmediately() {
+    updateButtonVisibility() {
         if (this.hasOpenBtnTarget) {
-            if (this.isOpen) {
+            if (this.isOpen && this.isDesktop()) {
                 this.openBtnTarget.classList.add('opacity-0', 'pointer-events-none')
                 this.openBtnTarget.classList.remove('opacity-100')
             } else {
@@ -141,48 +233,6 @@ export default class extends Controller {
                 this.openBtnTarget.classList.add('opacity-100')
             }
         }
-    }
-
-    // Metody do normalnego otwierania/zamykania z animacjami
-    open() {
-        if (this.isOpen || !this.hasSidebarTarget) return
-
-        this.sidebarTarget.classList.remove('hidden')
-        localStorage.setItem('sidebarOpen', 'true')
-
-        requestAnimationFrame(() => {
-            this.panelTarget.classList.remove('-translate-x-full')
-            this.panelTarget.classList.add('translate-x-0')
-
-            this.closeBtnTarget.classList.remove('opacity-0')
-            this.closeBtnTarget.classList.add('opacity-100')
-
-            this.isOpen = true
-            this.adjustMainContentMarginImmediately()
-            this.updateButtonVisibilityImmediately()
-        })
-    }
-
-    close() {
-        if (!this.isOpen || !this.hasSidebarTarget) return
-
-        localStorage.setItem('sidebarOpen', 'false')
-
-        this.panelTarget.classList.remove('translate-x-0')
-        this.panelTarget.classList.add('-translate-x-full')
-
-        this.closeBtnTarget.classList.remove('opacity-100')
-        this.closeBtnTarget.classList.add('opacity-0')
-
-        setTimeout(() => {
-            if (!this.isOpen) {
-                this.sidebarTarget.classList.add('hidden')
-            }
-        }, 300)
-
-        this.isOpen = false
-        this.adjustMainContentMarginImmediately()
-        this.updateButtonVisibilityImmediately()
     }
 
     handleKeyDown(event) {
