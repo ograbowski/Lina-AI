@@ -12,21 +12,32 @@ export default class extends Controller {
         this.handleKeyDown = this.handleKeyDown.bind(this)
         document.addEventListener('keydown', this.handleKeyDown)
 
-        requestAnimationFrame(() => {
-            this.initializeSidebarState()
-        })
+        // Wyłącz wszystkie animacje na początku
+        this.disableAnimations()
+
+        // Ustaw stan natychmiastowo bez animacji
+        this.initializeSidebarStateImmediately()
+
+        // Po krótkim timeout włącz animacje z powrotem
+        setTimeout(() => {
+            this.enableAnimations()
+        }, 50)
 
         // Nasłuchuj na Turbo events
         document.addEventListener('turbo:load', () => {
-            requestAnimationFrame(() => {
-                this.initializeSidebarState()
-            })
+            this.disableAnimations()
+            this.initializeSidebarStateImmediately()
+            setTimeout(() => {
+                this.enableAnimations()
+            }, 50)
         })
 
         document.addEventListener('turbo:render', () => {
-            requestAnimationFrame(() => {
-                this.initializeSidebarState()
-            })
+            this.disableAnimations()
+            this.initializeSidebarStateImmediately()
+            setTimeout(() => {
+                this.enableAnimations()
+            }, 50)
         })
     }
 
@@ -34,21 +45,54 @@ export default class extends Controller {
         document.removeEventListener('keydown', this.handleKeyDown)
     }
 
-    initializeSidebarState() {
-        const savedState = localStorage.getItem('sidebarOpen')
-
-        if (savedState === 'true') {
-            this.restoreOpenState()
-        } else {
-            this.ensureClosedState()
+    disableAnimations() {
+        // Wyłącz animacje dla wszystkich elementów
+        if (this.hasMainContentTarget) {
+            this.mainContentTarget.style.transition = 'none'
+        }
+        if (this.hasPanelTarget) {
+            this.panelTarget.style.transition = 'none'
+        }
+        if (this.hasCloseBtnTarget) {
+            this.closeBtnTarget.style.transition = 'none'
+        }
+        if (this.hasOpenBtnTarget) {
+            this.openBtnTarget.style.transition = 'none'
         }
     }
 
-    restoreOpenState() {
+    enableAnimations() {
+        // Włącz animacje z powrotem
+        if (this.hasMainContentTarget) {
+            this.mainContentTarget.style.transition = 'margin-left 0.3s ease'
+        }
+        if (this.hasPanelTarget) {
+            this.panelTarget.style.transition = 'transform 0.3s ease'
+        }
+        if (this.hasCloseBtnTarget) {
+            this.closeBtnTarget.style.transition = 'opacity 0.3s ease'
+        }
+        if (this.hasOpenBtnTarget) {
+            this.openBtnTarget.style.transition = 'opacity 0.3s ease'
+        }
+    }
+
+    initializeSidebarStateImmediately() {
+        const savedState = localStorage.getItem('sidebarOpen')
+
+        if (savedState === 'true') {
+            this.restoreOpenStateImmediately()
+        } else {
+            this.ensureClosedStateImmediately()
+        }
+    }
+
+    restoreOpenStateImmediately() {
         if (!this.hasSidebarTarget || !this.hasPanelTarget || !this.hasCloseBtnTarget) {
             return
         }
 
+        // Ustaw stan natychmiastowo bez animacji
         this.sidebarTarget.classList.remove('hidden')
         this.panelTarget.classList.remove('-translate-x-full')
         this.panelTarget.classList.add('translate-x-0')
@@ -56,15 +100,16 @@ export default class extends Controller {
         this.closeBtnTarget.classList.add('opacity-100')
 
         this.isOpen = true
-        this.adjustMainContentMargin()
-        this.updateButtonVisibility()
+        this.adjustMainContentMarginImmediately()
+        this.updateButtonVisibilityImmediately()
     }
 
-    ensureClosedState() {
+    ensureClosedStateImmediately() {
         if (!this.hasSidebarTarget || !this.hasPanelTarget || !this.hasCloseBtnTarget) {
             return
         }
 
+        // Ustaw stan natychmiastowo bez animacji
         this.sidebarTarget.classList.add('hidden')
         this.panelTarget.classList.add('-translate-x-full')
         this.panelTarget.classList.remove('translate-x-0')
@@ -72,10 +117,33 @@ export default class extends Controller {
         this.closeBtnTarget.classList.remove('opacity-100')
 
         this.isOpen = false
-        this.adjustMainContentMargin()
-        this.updateButtonVisibility()
+        this.adjustMainContentMarginImmediately()
+        this.updateButtonVisibilityImmediately()
     }
 
+    adjustMainContentMarginImmediately() {
+        if (this.hasMainContentTarget) {
+            if (this.isOpen) {
+                this.mainContentTarget.style.marginLeft = `${this.sidebarWidth}px`
+            } else {
+                this.mainContentTarget.style.marginLeft = '0px'
+            }
+        }
+    }
+
+    updateButtonVisibilityImmediately() {
+        if (this.hasOpenBtnTarget) {
+            if (this.isOpen) {
+                this.openBtnTarget.classList.add('opacity-0', 'pointer-events-none')
+                this.openBtnTarget.classList.remove('opacity-100')
+            } else {
+                this.openBtnTarget.classList.remove('opacity-0', 'pointer-events-none')
+                this.openBtnTarget.classList.add('opacity-100')
+            }
+        }
+    }
+
+    // Metody do normalnego otwierania/zamykania z animacjami
     open() {
         if (this.isOpen || !this.hasSidebarTarget) return
 
@@ -90,8 +158,8 @@ export default class extends Controller {
             this.closeBtnTarget.classList.add('opacity-100')
 
             this.isOpen = true
-            this.adjustMainContentMargin()
-            this.updateButtonVisibility()
+            this.adjustMainContentMarginImmediately()
+            this.updateButtonVisibilityImmediately()
         })
     }
 
@@ -113,34 +181,8 @@ export default class extends Controller {
         }, 300)
 
         this.isOpen = false
-        this.adjustMainContentMargin()
-        this.updateButtonVisibility()
-    }
-
-    updateButtonVisibility() {
-        if (this.hasOpenBtnTarget) {
-            if (this.isOpen) {
-                // Ukryj przycisk open gdy sidebar jest otwarty
-                this.openBtnTarget.classList.add('opacity-0', 'pointer-events-none', 'disabled')
-                this.openBtnTarget.classList.remove('opacity-100')
-            } else {
-                // Pokaż przycisk open gdy sidebar jest zamknięty
-                this.openBtnTarget.classList.remove('opacity-0', 'pointer-events-none', 'disabled')
-                this.openBtnTarget.classList.add('opacity-100')
-            }
-        }
-    }
-
-
-
-    adjustMainContentMargin() {
-        if (this.hasMainContentTarget) {
-            if (this.isOpen) {
-                this.mainContentTarget.style.marginLeft = `${this.sidebarWidth}px`
-            } else {
-                this.mainContentTarget.style.marginLeft = '0px'
-            }
-        }
+        this.adjustMainContentMarginImmediately()
+        this.updateButtonVisibilityImmediately()
     }
 
     handleKeyDown(event) {
